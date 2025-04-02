@@ -1,18 +1,34 @@
 from textual.app import App
-from textual.widgets import Footer, Header, Button, Label
-from textual.containers import Grid
+from textual.widgets import (
+        Footer, Header, Button, Label, DataTable, Label, Static)
+from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import Screen
 
 class LogBook(App):
     CSS_PATH = 'logbook.tcss'
     BINDINGS = [
         ('a', 'add_entry', 'Add entry to logbook'),
+        ('d', 'delete_entry', 'Delete entry to logbook'),
         ('q', 'request_quit', 'Quit'),
     ]
     
     def compose(self):
         'Automatically called when app is running'
         yield Header()
+        entries_list = DataTable(classes='logbook-entries')
+        entries_list.focus()
+        entries_list.add_columns('ID', 'Title', 'Date')
+        entries_list.cursor_type = 'row' # will highlight selected row
+        entries_list.zebra_stripes = True
+        add_button = Button('Add', variant='success', id='add_entry')
+        add_button.focus()
+        buttons_panel = Vertical(
+                add_button,
+                Button('Delete', variant='warning', id='delete_entry'),
+                Static(classes='separator'),
+                classes='buttons-panel',
+        )
+        yield Horizontal(entries_list, buttons_panel)
         yield Footer()
 
     def on_mount(self):
