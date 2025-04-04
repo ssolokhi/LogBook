@@ -11,6 +11,10 @@ class LogBook(App):
         ('d', 'delete_entry', 'Delete entry to logbook'),
         ('q', 'request_quit', 'Quit'),
     ]
+
+    def __init__(self, database):
+        super().__init__()
+        self.database = database
     
     def compose(self):
         'Automatically called when app is running'
@@ -35,9 +39,13 @@ class LogBook(App):
         'Set properties of main screen'
         self.title = 'Log Book'
         self.sub_title = 'A log book for keeping track of completed work'
+        self._load_enries()
 
-    def action_add_entry(self):
-        pass
+    def _load_enries(self):
+        entries_list = self.query_one(DataTable)
+        for entry_data in self.database.get_all_log_entries():
+            id, *log_entry = entry_data
+            entries_list.add_row(*log_entry, key=id)
 
     def action_request_quit(self):
         def check_answer(accepted):
