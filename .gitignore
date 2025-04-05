@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Databases
+*.db
+
+# Mypy static analyser configuration
+*.ini
+
+
 # C extensions
 *.so
 

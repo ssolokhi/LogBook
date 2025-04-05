@@ -1,7 +1,8 @@
 import pathlib
 import sqlite3
 
-DATABASE_PATH = pathlib.Path.home() / 'log_entries.db'
+DATABASE_PATH = pathlib.Path.home() / 'LogBook/log_entries.db'
+
 
 class Database:
     def __init__(self, database_path=DATABASE_PATH):
@@ -14,11 +15,12 @@ class Database:
             CREATE TABLE IF NOT EXISTS logs(
                 id INTEGER PRIMARY KEY,
                 title TEXT,
+                body TEXT,
                 date TEXT
             );
         """
         self._execute_query(query)
-        
+
     def _execute_query(self, query, *query_args):
         result = self.cursor.execute(query, [*query_args])
         self.database.commit()
@@ -27,7 +29,7 @@ class Database:
     def get_all_log_entries(self):
         result = self._execute_query("SELECT * FROM logs;")
         return result.fetchall()
-    
+
     def get_last_log_entry(self):
         result = self._execute_query(
             "SELECT * FROM logs ORDER BY id DESC LIMIT 1;"
@@ -36,7 +38,7 @@ class Database:
 
     def add_log_entry(self, log_entry):
         self._execute_query(
-            "INSERT INTO logs VALUE (NULL,?,?,?);",
+            "INSERT INTO logs VALUES (NULL,?,?,?);",
             *log_entry,
         )
 
@@ -45,5 +47,3 @@ class Database:
             "DELETE FROM logs WHERE id=(?);",
             id,
         )
-
-
