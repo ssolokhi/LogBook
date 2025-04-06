@@ -58,6 +58,23 @@ class LogBook(App):
                 self.query_one(DataTable).add_row(*log_entry, key=_id)
         self.push_screen(InputDialog(), check_entry)
 
+    @on(Button.Pressed, '#delete_entry')
+    def action_delete_entry(self):
+        entries_list = self.query_one(DataTable)
+        row_key, _ = entries_list.coordinate_to_cell_key(
+            entries_list.cursor_coordinate
+        )
+        
+        def check_answer(accepted):
+            if accepted and row_key:
+                self.database.delete_log_entry(id=row_key.value)
+                entries_list.remove_row(row_key)
+
+        self.push_screen(
+            QuestionDialog('Do you want to delete entry?'),
+            check_answer,
+        )
+
     def action_request_quit(self):
         def check_answer(accepted):
             if accepted:
