@@ -1,0 +1,15 @@
+[project]
+name = "logbook"
+version = "0.2.0"
+authors = [
+  { name="Sergei Solokhin", email="solokhin02@gmail.com" },
+]
+description = "A simple back-up logbook in case the Nikhef logbook is not available"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
