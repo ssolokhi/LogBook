@@ -1,7 +1,7 @@
 import pathlib
 import sqlite3
 
-DATABASE_PATH = pathlib.Path.home() / 'LogBook/log_entries.db'
+DATABASE_PATH = pathlib.Path.home() / "LogBook/log_entries.db"
 
 
 class Database:
@@ -31,9 +31,7 @@ class Database:
         return result.fetchall()
 
     def get_last_log_entry(self):
-        result = self._execute_query(
-            "SELECT * FROM logs ORDER BY id DESC LIMIT 1;"
-        )
+        result = self._execute_query("SELECT * FROM logs ORDER BY id DESC LIMIT 1;")
         return result.fetchone()
 
     def add_log_entry(self, log_entry):
