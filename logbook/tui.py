@@ -79,7 +79,7 @@ class LogBook(App):
 
         def check_answer(accepted):
             if accepted and row_key:
-                self.database.delete_log_entry(id=row_key.value)
+                self.database.delete_log_entry(_id=row_key.value)
                 entries_list.remove_row(row_key)
 
         self.push_screen(
