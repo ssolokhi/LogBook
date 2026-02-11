@@ -1,3 +1,4 @@
+from datetime import datetime
 from textual.app import App, on
 from textual.widgets import (
     Footer,
@@ -6,15 +7,15 @@ from textual.widgets import (
     Input,
     Label,
     DataTable,
-    Label,
     Static,
 )
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import Screen
-from datetime import datetime
 
 
 class LogBook(App):
+    """A top-level class responsible for Creating the basis of the GUI."""
+
     CSS_PATH = "logbook.tcss"
     BINDINGS = [
         ("a", "add_entry", "Add entry to logbook"),
@@ -27,7 +28,7 @@ class LogBook(App):
         self.database = database
 
     def compose(self):
-        "Automatically called when app is running"
+        """Automatically called when app is running to create general outline of the GUI."""
         yield Header()
         entries_list = DataTable(classes="logbook-entries")
         entries_list.focus()
@@ -46,12 +47,13 @@ class LogBook(App):
         yield Footer()
 
     def on_mount(self):
-        "Set properties of main screen"
+        """Set (sub)titles of main screen."""
         self.title = "Log Book"
         self.sub_title = "A log book for keeping track of completed work"
         self._load_enries()
 
     def _load_enries(self):
+        """Add entries for display horizontally."""
         entries_list = self.query_one(DataTable)
         for entry_data in self.database.get_all_log_entries():
             _id, *log_entry = entry_data
@@ -59,6 +61,8 @@ class LogBook(App):
 
     @on(Button.Pressed, "#add_entry")
     def action_add_entry(self):
+        """Display dialog window for adding a log entry."""
+
         def check_entry(entry_data):
             if entry_data:
                 self.database.add_log_entry(entry_data)
@@ -69,6 +73,7 @@ class LogBook(App):
 
     @on(Button.Pressed, "#delete_entry")
     def action_delete_entry(self):
+        """Display dialog window for deleting a log entry."""
         entries_list = self.query_one(DataTable)
         row_key, _ = entries_list.coordinate_to_cell_key(entries_list.cursor_coordinate)
 
@@ -83,6 +88,8 @@ class LogBook(App):
         )
 
     def action_request_quit(self):
+        """Display dialog window for quitting the app."""
+
         def check_answer(accepted):
             if accepted:
                 self.exit()
@@ -91,11 +98,14 @@ class LogBook(App):
 
 
 class QuestionDialog(Screen):
+    """Allows creating dialog windows with a custom message and yes/no answer buttons."""
+
     def __init__(self, message, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.message = message
 
     def compose(self):
+        """Add two yes/no answer buttons to the dialog window"""
         no_button = Button("No", variant="primary", id="no")
         no_button.focus()
 
@@ -107,6 +117,7 @@ class QuestionDialog(Screen):
         )
 
     def on_button_pressed(self, event):
+        """Convert pushed button to a stored binary value."""
         if event.button.id == "yes":
             self.dismiss(True)
         else:
@@ -114,7 +125,12 @@ class QuestionDialog(Screen):
 
 
 class InputDialog(Screen):
+    """Allows creating dialog window for creating log entries.
+    The entry will be automatically timestamped later on.
+    """
+
     def compose(self):
+        """Create a dialog window for inputing a log entry title and body."""
         yield Grid(
             Label("Add Entry", id="title"),
             Label("Title:", classes="label"),
@@ -136,6 +152,9 @@ class InputDialog(Screen):
         )
 
     def on_button_pressed(self, event):
+        """Monitore button pushes for adding the log entry (or discarding it).
+        A timestamp is added to the user' input.
+        """
         if event.button.id == "ok":
             title = self.query_one("#entry_title", Input).value
             body = self.query_one("#entry_body", Input).value
