@@ -1,7 +1,7 @@
 from pathlib import Path
 import sqlite3
 
-DATABASE_PATH = "/".join((str(Path.home()), "LogBook", "database", "log_entries.db"))
+DATABASE_PATH = "/".join(("database", "log_entries.db"))
 
 
 class Database:
